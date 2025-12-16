@@ -24,31 +24,17 @@ public class Simulation {
     }
 
     public void update() {
-        Particle[] newLine = new Particle[size];
-        boolean[] moved = new boolean[size]; // Track if a particle has already moved
         for (int i = 0; i < size; i++) {
-            if (line[i] != null && !moved[i]) {
-                int pos = i;
-                Particle p = line[i];
-                while (true) {
-                    int move = p.step();
-                    int nextPos = pos + move;
-                    // Check if next position is valid and empty
-                    if (move != 0 && nextPos >= 0 && nextPos < size && newLine[nextPos] == null && line[nextPos] == null) {
-                        pos = nextPos;
-                    } else {
-                        // If can't move, reverse direction and stop
-                        if (move != 0) {
-                            p.reverse();
-                        }
-                        break;
-                    }
+            if (line[i] != null) {
+                int j = i + line[i].step();
+                if (j >= 0 && j < size && line[j] == null) {
+                    line[j] = line[i];
+                    line[i] = null;
+                } else {
+                    line[i].reverse();
                 }
-                newLine[pos] = p;
-                moved[pos] = true;
             }
         }
-        line = newLine;
     }
 
     @Override
